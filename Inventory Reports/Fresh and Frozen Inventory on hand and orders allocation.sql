@@ -3,13 +3,11 @@ Background of the report:
 
 This is one of the first SQL script/report that I developed as an Inventory Analyst.
 
-The company that just recently replaced their ERP system (Microsoft Dynamics GP 10.0 to Microsoft Dynamics GP 2018 with a Third-party integration software) 
-An adequate way to show inventory on hand for the sales team was not an option, nor there was an efficient way to show the aggregate ordered quantity across the entire team.
-This limited the sales team's visibility of overselling and missed the opportunity for offering customers similar products (i.e. different package size). 
-The chance of item bing backordered was high.
-This report bridged the gap for the sales team to have visibility over available to promise, as well as excluding "phantom inventory" due to a process of temporary adding quantity in the system, 
+The company that just recently replaced their ERP system (Microsoft Dynamics GP 10.0 to Microsoft Dynamics GP 2018 with a Third-party integration software), However, there wasn’t an adequate way to show inventory on hand for the sales team, nor there was an efficient way to show the aggregate ordered quantity across the entire team. This limited the sales team's visibility of stock availability and often cost the opportunity for offering customers similar products (i.e. different package size) when stock out. The risk of backordering customers was high.
+This report bridged the gap for the sales team to have visibility over available to promise, as well as excluding "phantom inventory" due to a process of temporary adding quantity in the system. 
 
 This report is still being using today, and it is now in its version 3 as of Oct 2020.
+
 
 -------------------------------------------------------------------------------------------------- */
 
