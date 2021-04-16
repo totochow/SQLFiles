@@ -1,0 +1,62 @@
+-- Specify Server
+USE TFISH;
+GO
+
+-- Remove temp table if it exist
+IF OBJECT_ID('tempdb..#CHNG_RT041520211548') IS NOT NULL DROP TABLE #CHNG_RT041520211548
+
+-- Decalre variables
+DECLARE @INTERID	VARCHAR(10)		= 'TFISH'
+DECLARE @Values		VARCHAR(1000)	= '505,510' 
+DECLARE @FROM_ROUTE VARCHAR(100)	= '7 SEAS RT 1'
+DECLARE @TO_ROUTE	VARCHAR(100)	= '7 SEAS RT X'
+DECLARE @SHIPDATE	DATE			= '2021-04-14'
+
+-- creating temp table and show to user to varify if this is the desired results
+SELECT	RTRIM(SH.interid) Sever,
+		SH.reqNum Order_Number,
+		SH.salesStatus Status_Number,
+		RTRIM(LIST.statusText) Status_Name,
+		RTRIM(CM.CUSTNAME) Customer_Name, 
+		SH.shipDate Requested_Ship_Date,
+		RTRIM(SH.siteID) Site,
+		RTRIM(SH.shipMethod) Old_Ship_Method,
+		RTRIM(@TO_ROUTE) New_Ship_Method
+
+		--,* 
+
+INTO	#CHNG_RT041520211548
+FROM	WebsanTimePortal..salesHeader SH (NOLOCK) 
+JOIN	RM00101 CM (NOLOCK) ON SH.custNum = CM.CUSTNMBR
+JOIN	WebsanTimePortal..statusList LIST ON SH.salesStatus = LIST.status AND LIST.interID = @INTERID AND LIST.listName = 'SOP'
+			
+WHERE	SH.interid = @INTERID
+		AND SH.shipMethod = @FROM_ROUTE
+		AND SH.shipDate = @SHIPDATE
+
+		AND SH.salesStatus IN (SELECT VALUE FROM STRING_SPLIT(@Values,','))
+
+-- Display results
+SELECT * FROM #CHNG_RT041520211548;
+
+-- begain update script
+SET XACT_ABORT ON
+BEGIN TRAN
+
+-- update sales header
+UPDATE WebsanTimePortal..salesHeader
+	SET salesHeader.shipMethod = @TO_ROUTE
+FROM WebsanTimePortal..salesHeader SHH
+	INNER JOIN #CHNG_RT041520211548 TC ON SHH.reqNum = TC.Order_Number AND SHH.interid = TC.Sever
+
+-- update each line items
+UPDATE WebsanTimePortal..salesLine
+	SET salesLine.shipMethod = @TO_ROUTE
+FROM WebsanTimePortal..salesLine SLL 
+	INNER JOIN #CHNG_RT041520211548 TC ON SLL.reqNum = TC.Order_Number AND SLL.interid = TC.Sever
+
+ROLLBACK
+--COMMIT
+
+-- drop temp table
+drop table #CHNG_RT041520211548
