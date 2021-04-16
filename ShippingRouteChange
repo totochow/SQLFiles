@@ -1,3 +1,16 @@
+/* This file is to reduce the amount of time supervisor needed to change an order route. An order route is equivalent to a truck route. If a truck is not available or a truck driver calls in sick or is on vacation, the process of changing the route is tedious. The supervisor or the lead hand would have to 1) unallocate the order, 2) unsubmit the order 3) change to a different url on the browser (from order fulfillment screen to order creation screen) 4) change to the desired route, and 5) resubmit the order 6) reallocate inventory
+
+One would have to apply the above process to each sales order. 
+
+The potential saving of this SQL script is as follow:
+There are around 30 orders per day * 6 days per week * 3 minutes each for above described process = saved 540 minutes per week, down to just a few minutes per week max.
+
+Other potential savings are:
+- save time from looking up orders manually
+- reduce risk of data entry (human error)
+
+*/
+
 -- Specify Server
 USE TFISH;
 GO
